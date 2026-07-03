@@ -51,21 +51,34 @@ Install `code-review-graph` globally on your system. Follow the official install
 
 ## 🚀 Easy Onboarding (LLM Bootstrap)
 
-This workspace contains the configuration files and custom rules needed to run the system. When you open this workspace in your agentic IDE (like Antigravity, Cursor, or VS Code with Cline), copy and paste the prompt below into the agent's chat window. 
+This workspace contains the configuration files and custom rules needed to run the system. When you open this workspace in your agentic environment, copy and paste the prompt below into your agent's chat window. 
 
-The agent will automatically locate your paths and set up your local `mcp_config.json` file.
+The agent will automatically detect your setup and configure the MCP servers for you.
 
 ### 📋 Copy-Paste Onboarding Prompt:
 ```markdown
-Please help me bootstrap my local Antigravity environment. 
-
-You need to create my user-specific `mcp_config.json` file. Please guide me through this by performing the following steps:
+Please help me bootstrap my local MCP Collaborative System. Follow these steps to configure the environment:
 
 1. Detect the absolute path of this workspace on my computer.
-2. Ask me to paste my GitHub Personal Access Token (PAT).
-3. Create (or overwrite) the `mcp_config.json` file in my local directory at:
-   `C:\Users\<my_username>\.gemini\antigravity-ide\mcp_config.json`
-4. Use the following JSON template, substituting the detected workspace paths and the GitHub PAT I provide:
+2. Detect which IDE or agent extension we are currently running in (e.g., Antigravity IDE, VS Code with Cline/Roo Code, Claude Desktop, or Cursor).
+3. Ask me to paste my GitHub Personal Access Token (PAT).
+4. Configure the following MCP settings:
+
+   - **If running in Antigravity IDE:** Write the JSON config below to:
+     `C:\Users\<username>\.gemini\antigravity-ide\mcp_config.json`
+   
+   - **If running in Claude Desktop:** Write the JSON config below to:
+     Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+     macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+     
+   - **If running in VS Code (Cline/Roo Code):** Write the JSON config below to:
+     Windows: `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
+     macOS: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+     
+   - **If running in Cursor:** Since Cursor uses a settings GUI, print out the exact values (Name, Type, Command, Args, Env) and give me step-by-step instructions on how to enter them manually in Cursor's settings.
+
+### Configuration Template to Apply/Generate:
+(Be sure to replace `<DETECTED_WORKSPACE_PATH>` with the actual absolute path of this workspace, and `<USER_GITHUB_TOKEN>` with the token I provide).
 
 {
   "mcpServers": {
@@ -80,7 +93,7 @@ You need to create my user-specific `mcp_config.json` file. Please guide me thro
         "ghcr.io/github/github-mcp-server"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "<INSERT_USER_GITHUB_TOKEN>"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<USER_GITHUB_TOKEN>"
       }
     },
     "code-review-graph": {
@@ -100,6 +113,6 @@ You need to create my user-specific `mcp_config.json` file. Please guide me thro
   }
 }
 
-Once you have written the file, verify the configuration and confirm when we are ready to build!
+Verify the configuration once complete and confirm when we are ready to build!
 ```
-*(Note: If you are using VS Code with the Cline extension, instruct the agent to write the configuration to `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json` instead).*
+
