@@ -26,3 +26,9 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
 - **Rule**: At the end of every execution phase, or whenever pausing/ending a task, the agent MUST automatically update the `task.md` file in the conversation artifacts directory.
 - **Rule**: The update must detail completed tasks `[x]`, in-progress tasks `[/]`, and clearly state where the work was stopped so that a fresh conversation session can resume immediately without manual user explanation.
 
+## 6. Docker Cleanup Shortcut
+- **Rule**: If the user instructs to "run docker cleanup command", the agent must run the following PowerShell command in the workspace:
+  `docker system prune --volumes -f`
+- **Rule**: Print the execution stdout/stderr to show the user how much disk space was reclaimed.
+
+
