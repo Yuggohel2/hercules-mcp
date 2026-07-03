@@ -64,18 +64,17 @@ Please help me bootstrap my local MCP Collaborative System. Follow these steps t
 3. Ask me to paste my GitHub Personal Access Token (PAT).
 4. Configure the following MCP settings:
 
+   - **If running in Claude Code CLI:** Write the configuration to `~/.claude.json` (or use `claude mcp add` CLI commands to add each server).
+   
    - **If running in Antigravity IDE:** Write the JSON config below to:
      `C:\Users\<username>\.gemini\antigravity-ide\mcp_config.json`
-   
-   - **If running in Claude Desktop:** Write the JSON config below to:
-     Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-     macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
      
    - **If running in VS Code (Cline/Roo Code):** Write the JSON config below to:
      Windows: `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
      macOS: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
      
    - **If running in Cursor:** Since Cursor uses a settings GUI, print out the exact values (Name, Type, Command, Args, Env) and give me step-by-step instructions on how to enter them manually in Cursor's settings.
+
 
 ### Configuration Template to Apply/Generate:
 (Be sure to replace `<DETECTED_WORKSPACE_PATH>` with the actual absolute path of this workspace, and `<USER_GITHUB_TOKEN>` with the token I provide).
