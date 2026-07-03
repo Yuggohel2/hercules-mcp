@@ -4,6 +4,17 @@ An ultra-efficient, highly collaborative agentic coding framework built using th
 
 ---
 
+## 💻 Supported Clients & IDEs
+
+Since this system is built entirely on the open-standard **Model Context Protocol (MCP)**, it is compatible with any MCP-enabled agentic environment, including:
+*   **Antigravity IDE**
+*   **Claude Code (CLI)**
+*   **Cursor**
+*   **VS Code** (using extensions like [Cline](https://github.com/cline/cline) or [Roo Code](https://github.com/RooVetGit/Roo-Code))
+*   **Windsurf**
+*   Any other MCP-compliant agent.
+
+
 ## ⚡ Core Advantages
 
 *   **📉 90% Token Cost Reduction:** The **Code-Review-Graph** indexes your repository and allows the agent to request only the exact, minimal line ranges required. No more dumping whole files or recursive directories into the context window.
