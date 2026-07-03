@@ -7,16 +7,14 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
 - **Rule**: Always query the `code-review-graph` server first (e.g., using `query_graph_tool`, `get_impact_radius_tool`, or `list_flows_tool`).
 - **Rule**: Only load specific files identified by the graph analysis. Never load files larger than 150 lines in their entirety; request specific line ranges using `view_file` to conserve context.
 
-## 2. Strict OpenHands Delegation
-- **Rule**: Antigravity must act strictly as **The Brain** (Architect/Planner). It must **not** directly write code changes, run iterative debugging/build cycles, or write unit tests.
-- **Rule**: All coding tasks, boilerplate generation, debugging loops, and test executions must be delegated to **OpenHands** via the `openhands.run_task` tool.
-- **Rule**: When delegating:
-  - Provide a highly specific prompt containing only the necessary context (e.g., paths of target files, target behavior, and test commands).
-  - Do **not** pass full history or unrelated files to the OpenHands prompt.
+## 2. Strict OpenHands Sandbox Delegation
+- **Rule**: Antigravity must act strictly as **The Brain** (Architect/Planner). It must **not** directly write code changes to the host file system, run local terminal debugging/build cycles, or run local unit tests.
+- **Rule**: All file updates, terminal command executions, build/test cycles, and debugging actions must be executed inside the sandboxed OpenHands container via the `openhands.execute_bash` tool.
+- **Rule**: Plan the exact commands and code edits (e.g. using `python`, `sed`, or other shell scripts) and run them directly in the sandbox.
 
-## 3. No Status Polling (Async Execution)
-- **Rule**: After calling `openhands.run_task`, the agent must immediately go idle (stop calling tools or schedule a fallback timer).
-- **Rule**: Do **not** poll `openhands.get_task_status` or run `sleep` commands. The system's reactive wakeup mechanism will automatically resume execution once OpenHands completes.
+## 3. Synchronous Sandbox Execution (No Polling)
+- **Rule**: Commands run inside the sandbox via `openhands.execute_bash` are executed synchronously. Specify an appropriate timeout (default 300s) and handle the result (exit code, stdout, stderr) immediately in your next step.
+- **Rule**: Do **not** run background `sleep` loops or poll task status.
 
 ## 4. Summarization and Verification
 - **Rule**: When OpenHands finishes, only request the final diff and a brief test pass summary. Do not output raw build logs or stack traces to the main chat.
@@ -31,4 +29,7 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
   `docker system prune --volumes -f`
 - **Rule**: Print the execution stdout/stderr to show the user how much disk space was reclaimed.
 
+## 7. GitHub Push Constraint
+- **Rule**: Do NOT push code changes to the GitHub repository automatically.
+- **Rule**: Only push changes to the remote GitHub repository when the user explicitly instructs you to do so.
 

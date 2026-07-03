@@ -151,6 +151,21 @@ async def run_task(conversation_id: str) -> Dict[str, Any]:
         return res.json()
 
 @mcp.tool()
+async def execute_bash(command: str, cwd: Optional[str] = None, timeout: int = 300) -> Dict[str, Any]:
+    """Execute a bash command inside the sandboxed OpenHands container."""
+    url = f"{OPENHANDS_URL}/api/bash/execute_bash_command"
+    payload = {
+        "command": command,
+        "cwd": cwd,
+        "timeout": timeout
+    }
+    async with httpx.AsyncClient(timeout=float(timeout + 10)) as client:
+        res = await client.post(url, json=payload, headers=get_headers())
+        res.raise_for_status()
+        return res.json()
+
+
+@mcp.tool()
 async def get_task_status(conversation_id: str) -> Dict[str, Any]:
     """Retrieve the current execution status and last response of an OpenHands conversation."""
     headers = get_headers()
