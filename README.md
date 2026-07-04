@@ -41,6 +41,17 @@ This repository serves strictly as your custom integration, routing rules (`AGEN
 
 ---
 
+## 🌍 Cross-Platform & Environment Robustness
+
+This system is engineered to work reliably on any developer machine under any conditions:
+
+*   **💻 Cross-Platform Path Standardizing (Windows, macOS, Linux):** The integration script `openhands_mcp.py` dynamically normalizes path separators (mapping Windows backslashes `\` to standard Unix slashes `/` inside the sandbox). It resolves local workspace paths dynamically using environment variables or relative fallbacks.
+*   **🔌 IDE & Client Independence:** Since the system is built entirely on the standard **Model Context Protocol (MCP)**, it works out-of-the-box across **Cursor**, **VS Code** (Cline/Roo Code), **Antigravity IDE**, **Claude Code (CLI)**, or any other MCP-compliant interface. The onboarding system automatically guides the active LLM to write configurations to the correct paths depending on the editor in use.
+*   **📁 Custom Workspace & Folder Naming Support:** The two-tier architecture keeps system configs (System Root) separate from codebase projects (Projects Folder). The folders can be named **anything** (e.g. `Projects`, `my-software`, `src`). During onboarding, the LLM detects or asks the user for their directory names, links them dynamically, and creates them if they don't exist yet. The file-watcher automatically picks up any new projects added to that directory in the future.
+*   **🛡️ Git Cleanliness:** The `.gitignore` prevents machine-specific configuration files (such as `.DS_Store`, local `.venv/`, `.gemini/` credentials, or your active `mcp_config.json` containing personal API keys) from being tracked, ensuring no conflicts when pushing or pulling.
+
+---
+
 ## ⚙️ Setup Guide
 
 ### 1. Prerequisites
