@@ -7,21 +7,21 @@ An ultra-efficient, highly collaborative agentic coding framework built using th
 
 ```mermaid
 graph TD
-    subgraph Host Machine (User Workspace)
-        Brain["🧠 IDE Chat Agent<br>(Planning & Design)"]
-        Proxy["🌉 LLM Local Proxy Server<br>(llm_proxy.py)"]
-        Graph["🧩 code-review-graph<br>(Semantic Index & Deps)"]
+    subgraph Host [Host Machine]
+        Brain["IDE Chat Agent (The Brain)"]
+        Proxy["LLM Local Proxy (The Bridge)"]
+        Graph["code-review-graph (The Graph)"]
     end
-    subgraph Sandboxed Environment (Docker)
-        Hands["🛡️ OpenHands Sandbox<br>(Isolated Execution)"]
+    subgraph Sandbox [Docker Sandbox]
+        Hands["OpenHands Sandbox (The Hands)"]
     end
 
-    Brain -->|"1. Targeted Context"| Graph
-    Brain -->|"2. Design & Plan"| Brain
-    Brain -->|"3. Delegate Code/Test Tasks"| Hands
-    Hands -->|"4. Intercept API Calls (Port 9999)"| Proxy
-    Proxy -->|"5. Translate to Local IPC Files"| Brain
-    Hands -->|"6. Run Compile & Test Loops"| Hands
+    Brain -->|1. Context Lookup| Graph
+    Brain -->|2. Planning & Design| Brain
+    Brain -->|3. Task Delegation| Hands
+    Hands -->|4. Intercept API Calls| Proxy
+    Proxy -->|5. Local IPC Files| Brain
+    Hands -->|6. Compile & Test| Hands
 ```
 
 ---
