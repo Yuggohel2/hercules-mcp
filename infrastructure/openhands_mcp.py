@@ -15,6 +15,7 @@ import httpx
 import subprocess
 import threading
 import time
+import functools
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,20 @@ logger = logging.getLogger("openhands_mcp")
 mcp = FastMCP("openhands")
 
 OPENHANDS_URL = os.getenv("OPENHANDS_URL", "http://localhost:8000")
+
+def handle_network_errors(func):
+    """Decorator to catch network connection issues to OpenHands and show a friendly message."""
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            return await func(*args, **kwargs)
+        except httpx.RequestError as e:
+            raise ValueError(
+                f"Connection failed: Could not communicate with OpenHands server at {OPENHANDS_URL}. "
+                "Please verify that Docker Desktop is running and your OpenHands container is active."
+            ) from e
+    return wrapper
+
 
 _LAST_API_KEY = None
 
@@ -103,6 +118,7 @@ def extract_text_content(content) -> str:
     return ""
 
 @mcp.tool()
+@handle_network_errors
 async def list_conversations(limit: int = 10) -> Dict[str, Any]:
     """List existing conversations/sessions in the OpenHands instance."""
     url = f"{OPENHANDS_URL}/api/conversations/search"
@@ -112,6 +128,7 @@ async def list_conversations(limit: int = 10) -> Dict[str, Any]:
         return response.json()
 
 @mcp.tool()
+@handle_network_errors
 async def create_conversation(workspace_path: str, initial_message: Optional[str] = None) -> Dict[str, Any]:
     """
     Create a new conversation session configured for a specific workspace.
@@ -159,6 +176,7 @@ async def create_conversation(workspace_path: str, initial_message: Optional[str
         return conv_res.json()
 
 @mcp.tool()
+@handle_network_errors
 async def run_task(conversation_id: str) -> Dict[str, Any]:
     """Run/Resume a conversation session in the background."""
     url = f"{OPENHANDS_URL}/api/conversations/{conversation_id}/run"
@@ -168,6 +186,7 @@ async def run_task(conversation_id: str) -> Dict[str, Any]:
         return res.json()
 
 @mcp.tool()
+@handle_network_errors
 async def execute_bash(command: str, cwd: Optional[str] = None, timeout: int = 300) -> Dict[str, Any]:
     """Execute a bash command inside the sandboxed OpenHands container."""
     url = f"{OPENHANDS_URL}/api/bash/execute_bash_command"
@@ -183,6 +202,7 @@ async def execute_bash(command: str, cwd: Optional[str] = None, timeout: int = 3
 
 
 @mcp.tool()
+@handle_network_errors
 async def get_task_status(conversation_id: str) -> Dict[str, Any]:
     """Retrieve the current execution status and last response of an OpenHands conversation."""
     headers = get_headers()
@@ -207,6 +227,7 @@ async def get_task_status(conversation_id: str) -> Dict[str, Any]:
         }
 
 @mcp.tool()
+@handle_network_errors
 async def interrupt_task(conversation_id: str) -> Dict[str, Any]:
     """Immediately interrupt/pause the execution of a running conversation task."""
     url = f"{OPENHANDS_URL}/api/conversations/{conversation_id}/interrupt"
@@ -216,6 +237,7 @@ async def interrupt_task(conversation_id: str) -> Dict[str, Any]:
         return res.json()
 
 @mcp.tool()
+@handle_network_errors
 async def delete_conversation(conversation_id: str) -> Dict[str, Any]:
     """Permanently delete a conversation session and clean up its resources."""
     url = f"{OPENHANDS_URL}/api/conversations/{conversation_id}"
@@ -225,6 +247,7 @@ async def delete_conversation(conversation_id: str) -> Dict[str, Any]:
         return res.json()
 
 @mcp.tool()
+@handle_network_errors
 async def retrieve_logs(conversation_id: str, limit: int = 50) -> List[Dict[str, Any]]:
     """Retrieve sequential event logs (messages, actions, observations) for a conversation."""
     url = f"{OPENHANDS_URL}/api/conversations/{conversation_id}/events/search"

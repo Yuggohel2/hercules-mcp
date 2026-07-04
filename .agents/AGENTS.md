@@ -9,6 +9,7 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
   3. The **IDE / Agent client** in use (Antigravity IDE, Cursor, Claude Code, or VS Code with Cline/Roo Code).
 - **Rule**: If either folder does not exist, the agent must ask the user what to name them and create them. If they already exist, the agent must dynamically detect and connect them.
 - **Rule**: The agent must automatically write the detected/configured paths (`WORKSPACE_ROOT` and `PROJECTS_DIR`) into the `env` section of the `openhands` server configuration in `mcp_config.json` (or the equivalent client settings file) to ensure the collaborative tools are correctly scoped.
+- **Rule**: **Path Formatting in Configs:** When writing paths to `mcp_config.json` or client settings, the agent MUST always standardize paths to use forward slashes `/` (e.g., `C:/Users/John/Workspace`) instead of backslashes. This prevents JSON escape corruption bugs on Windows.
 
 ## 2. Graph-First Codebase Analysis (Only inside the Designated Project Folder)
 - **Rule**: First, identify the user's active/designated project folder containing their application/software code. If it is not clear or if multiple exist, ask the user to specify or confirm.
@@ -21,6 +22,7 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
 - **Rule**: All file updates, terminal command executions, build/test cycles, and debugging actions for code under the designated project folder must be executed inside the sandboxed OpenHands container via the `openhands.execute_bash` tool.
 - **Rule**: When making changes *outside* the designated project folder (such as configuring MCP servers, updating `openhands_mcp.py`, or modifying `AGENTS.md`/`mcp_config.json`), Antigravity must edit files directly on the host using its native file-writing tools (e.g., `replace_file_content`, `write_to_file`) and run local commands directly if needed.
 - **Rule**: **Path Translation:** When analyzing build/test outputs or errors produced inside the Docker container, the agent MUST automatically translate container-space absolute paths (e.g., `/projects/<project-name>/...`) back to host-space paths (e.g., `<PROJECTS_DIR>/<project-name>/...`) before using native file-viewing or editing tools (such as `view_file` or `replace_file_content`).
+- **Rule**: **Sandbox Path Quoting:** When generating bash commands to execute inside the sandbox (especially directory operations like `cd`, `ls`, or path targets in compilation/tests), the agent MUST always wrap path arguments in double quotes (e.g., `cd "/projects/my-app"`) to ensure compatibility with folder names containing spaces.
 
 ## 4. Synchronous Sandbox Execution (No Polling)
 - **Rule**: Commands run inside the sandbox via `openhands.execute_bash` are executed synchronously. Specify an appropriate timeout (default 300s) and handle the result (exit code, stdout, stderr) immediately in your next step.
