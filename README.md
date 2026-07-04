@@ -6,15 +6,13 @@ An ultra-efficient, highly collaborative agentic coding framework built using th
 ## 📐 System Architecture
 
 ```mermaid
-flowchart TB
+flowchart TD
     subgraph Host ["💻 Host Machine (Local Workspace)"]
-        direction LR
         Brain["🧠 IDE Chat Agent (The Brain)"]
-        Proxy["🌉 LLM Local Proxy (The Bridge)"]
         Graph["🧩 code-review-graph (The Graph)"]
+        Proxy["🌉 LLM Local Proxy (The Bridge)"]
     end
     subgraph Sandbox ["🛡️ Docker Sandbox (Execution)"]
-        direction LR
         Hands["⚙️ OpenHands Sandbox (The Hands)"]
     end
 
@@ -23,13 +21,13 @@ flowchart TB
     Hands -->|"3. Intercept LLM Calls"| Proxy
     Proxy -->|"4. Return Local Response"| Brain
 
-    style Brain fill:#ebf8ff,stroke:#3182ce,stroke-width:2px
-    style Graph fill:#e6fffa,stroke:#319795,stroke-width:2px
-    style Proxy fill:#ebf4ff,stroke:#4c51bf,stroke-width:2px
-    style Hands fill:#fff5f5,stroke:#e53e3e,stroke-width:2px
+    style Brain fill:#1e293b,stroke:#3b82f6,stroke-width:1.5px,color:#f8fafc
+    style Graph fill:#1e293b,stroke:#14b8a6,stroke-width:1.5px,color:#f8fafc
+    style Proxy fill:#1e293b,stroke:#6366f1,stroke-width:1.5px,color:#f8fafc
+    style Hands fill:#1e293b,stroke:#f43f5e,stroke-width:1.5px,color:#f8fafc
     
-    style Host fill:#f8fafc,stroke:#cbd5e0,stroke-width:2px
-    style Sandbox fill:#fffaf0,stroke:#feebc8,stroke-width:2px
+    style Host fill:none,stroke:#475569,stroke-width:1.5px
+    style Sandbox fill:none,stroke:#f43f5e,stroke-width:1.5px,stroke-dasharray: 5 5
 ```
 
 ---
