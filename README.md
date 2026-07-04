@@ -15,14 +15,18 @@ Since this system is built entirely on the open-standard **Model Context Protoco
 *   Any other MCP-compliant agent.
 
 
-## ⚡ Core Advantages
+## ⚡ Core Advantages (Industrial Standard Collaborative System)
 
-*   **📉 90% Token Cost Reduction:** The **Code-Review-Graph** indexes your repository and allows the agent to request only the exact, minimal line ranges required. No more dumping whole files or recursive directories into the context window.
-*   **🛡️ Regressions & Bug Prevention:** By delegating coding tasks to a sandboxed instance of **OpenHands**, code runs and validates tests *before* writing changes back. This isolates syntax and logical bugs.
-*   **🧩 True Separation of Concerns:**
-    *   **The Brain (Orchestrator):** Manages planning, specifications, and architecture.
-    *   **The Graph (code-review-graph):** Provides deep code analysis, comunidade identification, and impact radiuses.
-    *   **The Hands (OpenHands):** Executes code editing, building, and validation in a clean environment.
+This framework is built using the same design principles that guide enterprise-grade software engineering architectures:
+
+*   **🧩 True Separation of Concerns:** Decouples reasoning from execution.
+    *   **The Brain (Orchestrator):** The IDE LLM (Gemini/Claude) serves purely as the architect, focusing 100% of its capacity on requirements, planning, and code design.
+    *   **The Graph (Code Intelligence):** `code-review-graph` provides codebase analysis, semantic indexing, and dependency trees.
+    *   **The Hands (Execution):** `openhands` acts as the isolated execution layer where changes are securely compiled and tested.
+*   **📉 90% Token Cost Reduction:** Traditional tools dump entire files and directories into the context window, wasting tokens and causing model confusion. By querying the code-review-graph first, the orchestrator retrieves only the minimal, target line ranges required to understand a change.
+*   **🛡️ Isolated "Shift-Left" Sandbox Security:** Running AI-generated code directly on your local system is a major security risk. This system isolates all writes, compiles, and runs inside a secure **Docker container sandbox** (`openhands`). Changes are automatically verified via unit tests inside the sandbox before being written back, keeping your host system safe.
+*   **🔄 100% Environment Reproducibility:** By using Docker containerization, development environments, compilers, and dependencies are identical for every developer on the team, eliminating local version mismatches and the "works on my machine" problem.
+*   **🔌 IDE & Client Agnosticism:** Built entirely on the open-standard **Model Context Protocol (MCP)**, this system works out-of-the-box across **Cursor**, **VS Code** (Cline/Roo Code), **Antigravity IDE**, **Claude Code (CLI)**, or any other MCP-compliant interface.
 
 ---
 
