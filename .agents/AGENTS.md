@@ -47,8 +47,9 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
 
 ## 7. Docker Cleanup Shortcut
 - **Rule**: If the user instructs to "run docker cleanup command", the agent must run the following PowerShell command in the workspace:
-  `docker system prune --volumes -f`
+  `docker system prune -f`
 - **Rule**: Print the execution stdout/stderr to show the user how much disk space was reclaimed.
+
 
 ## 8. GitHub Push Constraint
 - **Rule**: Do NOT push code changes to the GitHub repository automatically.

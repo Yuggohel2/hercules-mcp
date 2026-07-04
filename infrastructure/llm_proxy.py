@@ -132,7 +132,8 @@ class LLMProxyHandler(http.server.BaseHTTPRequestHandler):
 def run_server():
     # Allow address reuse to prevent "Address already in use" errors on restarts
     socketserver.TCPServer.allow_reuse_address = True
-    port = int(os.getenv("LLM_PROXY_PORT", PORT))
+    default_port = PORT
+    port = int(os.getenv("LLM_PROXY_PORT", default_port))
     
     # Clean up any leftover files on startup
     safe_unlink(REQUEST_FILE)
@@ -142,6 +143,10 @@ def run_server():
         try:
             with socketserver.TCPServer(("0.0.0.0", port), LLMProxyHandler) as httpd:
                 print(f"[Proxy] LLM Local Proxy Server running on port {port}...")
+                if port != default_port:
+                    print(f"\n[WARNING] Bound to custom port {port} instead of default {default_port}!")
+                    print(f"[WARNING] Make sure your OpenHands container is configured to send requests to:")
+                    print(f"          http://host.docker.internal:{port}/v1/chat/completions\n")
                 httpd.serve_forever()
             break
         except OSError as e:

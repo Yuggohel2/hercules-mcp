@@ -268,7 +268,7 @@ async def retrieve_logs(conversation_id: str, limit: int = 50) -> List[Dict[str,
             
         return parsed_events
 
-def auto_register_project(project_path: Path):
+def auto_register_project(project_path: Path, restart_daemon: bool = True):
     """
     Ensure the folder has a code-review-graph repository marker, register it, 
     and add it to the code-review-graph watch daemon.
@@ -299,8 +299,9 @@ def auto_register_project(project_path: Path):
         subprocess.run(["code-review-graph", "daemon", "add", path_str], check=True, capture_output=True, text=True)
         
         # 3. Restart daemon to load the new config
-        logger.info(f"Restarting code-review-graph watch daemon")
-        subprocess.run(["code-review-graph", "daemon", "restart"], check=True, capture_output=True, text=True)
+        if restart_daemon:
+            logger.info(f"Restarting code-review-graph watch daemon")
+            subprocess.run(["code-review-graph", "daemon", "restart"], check=True, capture_output=True, text=True)
         
     except Exception as e:
         logger.error(f"Error registering project {project_path} with code-review-graph: {e}")
@@ -323,10 +324,15 @@ def watch_projects_folder():
         for entry in projects_dir.iterdir():
             if entry.is_dir() and not entry.name.startswith("."):
                 known_dirs.add(entry.name)
-                # Register existing folders on startup to verify state
-                auto_register_project(entry)
+                # Register existing folders on startup silently without restarting daemon
+                auto_register_project(entry, restart_daemon=False)
+        
+        # Restart daemon once after all projects are registered
+        logger.info("Restarting code-review-graph watch daemon after initial folder scan")
+        subprocess.run(["code-review-graph", "daemon", "restart"], check=True, capture_output=True, text=True)
+        
     except Exception as e:
-        logger.error(f"Error during initial Projects directory scan: {e}")
+        logger.error(f"Error during initial Projects directory scan/daemon restart: {e}")
 
     logger.info(f"Projects folder watcher active, scanning {projects_dir} every 5s...")
     while True:
@@ -338,7 +344,7 @@ def watch_projects_folder():
                     current_dirs.add(entry.name)
                     if entry.name not in known_dirs:
                         logger.info(f"New project folder detected: {entry.name}")
-                        auto_register_project(entry)
+                        auto_register_project(entry, restart_daemon=True)
             known_dirs = current_dirs
         except Exception as e:
             logger.error(f"Error in projects watcher loop: {e}")
