@@ -14,16 +14,16 @@ config:
 flowchart TD
     subgraph Host ["💻 Host Machine (Local Workspace)"]
         Brain["🧠 IDE Chat Agent (The Brain)"]
-        Graph["🧩 code-review-graph (The Graph)"]
-        Proxy["🌉 LLM Local Proxy (The Bridge)"]
+        Proxy(["🌉 LLM Local Proxy (The Bridge)"])
+        Graph[("🧩 code-review-graph (The Graph)")]
     end
     subgraph Sandbox ["🛡️ Docker Sandbox (Execution)"]
         Hands["⚙️ OpenHands Sandbox (The Hands)"]
     end
 
-    Brain -->|"1. Target Context"| Graph
-    Brain -->|"2. Delegate Execution"| Hands
-    Hands -->|"3. Intercept LLM Calls"| Proxy
+    Brain -->|"1. Query Context"| Graph
+    Brain -->|"2. Delegate Task"| Hands
+    Hands -->|"3. Intercept API Calls (Port 9999)"| Proxy
     Proxy -->|"4. Return Local Response"| Brain
 
     style Brain fill:#1e293b,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc,font-family:system-ui
@@ -34,7 +34,7 @@ flowchart TD
     style Host fill:none,stroke:#475569,stroke-width:1.5px
     style Sandbox fill:none,stroke:#fb7185,stroke-width:1.5px,stroke-dasharray: 5 5
 
-    linkStyle 0 stroke:#38bdf8,stroke-width:3px;
+    linkStyle 0 stroke:#2dd4bf,stroke-width:3px;
     linkStyle 1 stroke:#fb7185,stroke-width:3px;
     linkStyle 2 stroke:#818cf8,stroke-width:3px;
     linkStyle 3 stroke:#38bdf8,stroke-width:3px;
