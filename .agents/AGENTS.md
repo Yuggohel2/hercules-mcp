@@ -28,6 +28,8 @@ To optimize native performance and stay strictly within the 8% remaining Gemini 
 ## 5. Summarization and Verification (Only inside the Designated Project Folder)
 - **Rule**: When OpenHands finishes, only request the final diff and a brief test pass summary. Do not output raw build logs or stack traces to the main chat.
 - **Rule**: Use the `code-review-graph` to review changes post-implementation to ensure architectural integrity.
+- **Rule**: The verification test/challenge (specified in `README.md`) must only be run once to verify the initial system installation. If the user prompts to run the verification test, the agent must check if the `verification_test` directory already exists and has been successfully resolved. If it has, the agent must inform the user that the system is already verified and skip running it again.
+
 
 ## 6. Automatic Session State Persistence
 - **Rule**: At the end of every execution phase, or whenever pausing/ending a task, the agent MUST automatically update the `task.md` file in the conversation artifacts directory.

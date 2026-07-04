@@ -148,6 +148,9 @@ Verify the configuration once complete and confirm when we are ready to build!
 
 Once you have completed the onboarding setup, you can test that the entire system (Brain + Graph + Hands) is working together correctly by using the following verification challenge.
 
+> [!NOTE]
+> The verification challenge should only be run **once** per installation. If the `verification_test` directory already exists in the workspace and has been successfully resolved, the agent will detect it, notify you that verification is already complete, and skip running it again to conserve tokens and prevent redundant execution.
+
 ### The Verification Challenge Prompt:
 Copy and paste this prompt into your agentic chat window:
 
