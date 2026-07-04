@@ -15,16 +15,20 @@ Since this system is built entirely on the open-standard **Model Context Protoco
 *   Any other MCP-compliant agent.
 
 
-## ⚡ Core Advantages (Industrial Standard Collaborative System)
+## ⚡ Core Advantages & Main Features
 
 This framework is built using the same design principles that guide enterprise-grade software engineering architectures:
 
+*   **🔑 100% API-Key Free LLM Execution:** Eliminates the need for personal OpenAI, Anthropic, or Gemini API keys to drive OpenHands task execution. The system routes all execution requests directly through your IDE's active built-in model, saving massive API costs.
+*   **🌉 Model-Agnostic LLM Proxy Bridge:** Utilizes a lightweight HTTP server ([llm_proxy.py](file:///d:/AI%20workspace/mcp-collaborative-system/infrastructure/llm_proxy.py)) on port `9999` to intercept standard OpenAI Chat Completion calls from OpenHands and translate them into local files (`llm_request.json` / `llm_response.json`). This allows any model active in your IDE chat (Claude, Gemini, GPT, etc.) to drive the execution loop without modifications.
 *   **🧩 True Separation of Concerns:** Decouples reasoning from execution.
     *   **The Brain (Orchestrator):** The IDE LLM (Gemini/Claude) serves purely as the architect, focusing 100% of its capacity on requirements, planning, and code design.
     *   **The Graph (Code Intelligence):** `code-review-graph` provides codebase analysis, semantic indexing, and dependency trees.
     *   **The Hands (Execution):** `openhands` acts as the isolated execution layer where changes are securely compiled and tested.
-*   **📉 90% Token Cost Reduction:** Traditional tools dump entire files and directories into the context window, wasting tokens and causing model confusion. By querying the code-review-graph first, the orchestrator retrieves only the minimal, target line ranges required to understand a change.
+*   **📉 90% Token Cost Reduction:** Traditional tools dump entire files and directories into the context window, wasting tokens and causing model confusion. By querying the `code-review-graph` first, the orchestrator retrieves only the minimal, target line ranges required to understand a change.
 *   **🛡️ Isolated "Shift-Left" Sandbox Security:** Running AI-generated code directly on your local system is a major security risk. This system isolates all writes, compiles, and runs inside a secure **Docker container sandbox** (`openhands`). Changes are automatically verified via unit tests inside the sandbox before being written back, keeping your host system safe.
+*   **📋 Persistent Workspace & Session Memory:** Automatically maintains a standard task checklist (`task.md`) in the conversation artifacts directory and project context guidelines (`AGENTS.md`) in the workspace, ensuring the model never forgets the task state between IDE restarts.
+*   **🧹 Sandbox Cleanliness & Verification:** Automatically runs and validates all code changes using unit tests inside the Docker sandbox, and automatically cleans up temporary files post-execution to maintain a pristine codebase.
 *   **🔄 100% Environment Reproducibility:** By using Docker containerization, development environments, compilers, and dependencies are identical for every developer on the team, eliminating local version mismatches and the "works on my machine" problem.
 *   **🔌 IDE & Client Agnosticism:** Built entirely on the open-standard **Model Context Protocol (MCP)**, this system works out-of-the-box across **Cursor**, **VS Code** (Cline/Roo Code), **Antigravity IDE**, **Claude Code (CLI)**, or any other MCP-compliant interface.
 
