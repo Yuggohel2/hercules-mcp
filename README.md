@@ -124,36 +124,53 @@ Install `code-review-graph` globally on your system. Follow the official install
 
 ---
 
-## 🚀 Easy Onboarding (LLM Bootstrap)
+## 🚀 Easy Onboarding (LLM Bootstrap & File Architecture Guide)
 
-This workspace contains the configuration files and custom rules needed to run the system. When you open this workspace in your agentic environment, copy and paste the prompt below into your agent's chat window. 
+This workspace is structured using a **two-tier file architecture** designed to keep global system configurations separate from your codebase projects, preventing task-tracking conflicts:
 
-The agent will automatically detect your setup and configure the MCP servers for you.
+### 📐 Two-Tier File Architecture & Flow:
+1.  **🌌 System Root (`WORKSPACE_ROOT`)**:
+    *   This is the main parent directory of your workspace (e.g., `D:/AI workspace`).
+    *   **Contents**: Contains the `hercules-mcp` repository, global rulebook (`.agents/AGENTS.md`), general MCP server configurations (`mcp_config.json`), and the global persistent log file ([task.md](file:///d:/AI%20workspace/task.md)).
+    *   **Purpose**: Tracks system-level setup, tool versions, and rule adjustments across all session lifetimes.
+2.  **📁 Projects Directory (`PROJECTS_DIR`)**:
+    *   This is a dedicated subfolder directly under the System Root (default name `Projects/`, e.g., `D:/AI workspace/Projects`).
+    *   **Contents**: Contains your individual coding projects, apps, and software repositories (e.g., `ML_PROJECT-1/`, `auto-test-mcp/`).
+    *   **Purpose**: Each folder here maintains its own local isolated `task.md` checklist, ensuring the active agent never confuses project code changes with system configuration updates.
+
+---
 
 ### 📋 Copy-Paste Onboarding Prompt:
+When opening this workspace for the first time in an MCP-compliant agentic environment (Cursor, VS Code Cline/Roo Code, Antigravity, or Claude Code), **copy and paste this exact prompt** into the chat window. The agent will read it, dynamically detect your workspace paths, and configure your MCP settings automatically:
+
 ```markdown
-Please help me bootstrap my local Hercules-MCP system. Follow these steps to configure the environment:
+Please help me bootstrap my local Hercules-MCP system. Act as an expert system configuration agent and execute the following steps:
 
-1. Detect the absolute path of this workspace on my computer.
-2. Detect which IDE or agent extension we are currently running in (e.g., Antigravity IDE, VS Code with Cline/Roo Code, Claude Desktop, or Cursor).
-3. Ask me to paste my GitHub Personal Access Token (PAT).
-4. Configure the following MCP settings:
+1.  **Understand the File Architecture**:
+    *   Identify the absolute path of this workspace root on my machine. This is the `WORKSPACE_ROOT`.
+    *   Identify the sibling or child projects directory. By default, this is a folder named `Projects/` located directly under or next to the workspace root. This is the `PROJECTS_DIR`.
+    *   Verify if `PROJECTS_DIR` exists. If it does not exist yet, create it.
 
-   - **If running in Claude Code CLI:** Write the configuration to `~/.claude.json` (or use `claude mcp add` CLI commands to add each server).
-   
-   - **If running in Antigravity IDE:** Write the JSON config below to:
-     `C:\Users\<username>\.gemini\antigravity-ide\mcp_config.json`
-     
-   - **If running in VS Code (Cline/Roo Code):** Write the JSON config below to:
-     Windows: `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
-     macOS: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
-     
-   - **If running in Cursor:** Since Cursor uses a settings GUI, print out the exact values (Name, Type, Command, Args, Env) and give me step-by-step instructions on how to enter them manually in Cursor's settings.
+2.  **Detect Environment & IDE**:
+    *   Detect which IDE or agent client we are currently running in (e.g., Antigravity IDE, VS Code with Cline/Roo Code, Cursor, or Claude Code CLI).
 
+3.  **Request User Credentials**:
+    *   Ask me to paste my GitHub Personal Access Token (PAT).
+
+4.  **Configure MCP settings**:
+    *   Write the configuration payload shown below to the correct path based on our active IDE client:
+        *   **Antigravity IDE**: `C:\Users\<username>\.gemini\antigravity-ide\mcp_config.json`
+        *   **VS Code (Cline/Roo Code)**: 
+            *   Windows: `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
+            *   macOS: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
+        *   **Claude Code CLI**: `~/.claude.json`
+        *   **Cursor**: Since Cursor uses a settings GUI, print out the exact values (Name, Type, Command, Args, Env) and give me step-by-step instructions on how to enter them manually in Cursor's settings.
+
+5.  **Apply Path & Env Variables**:
+    *   In the `env` section of the `openhands` server configuration, you MUST inject the `WORKSPACE_ROOT` and `PROJECTS_DIR` paths.
+    *   **CRITICAL WINDOWS PRECAUTION**: When writing paths to `mcp_config.json` or client settings, you MUST replace all backslashes (`\`) with forward slashes (`/`) (e.g., `D:/AI workspace/hercules-mcp`). This prevents JSON escape corruption crashes.
 
 ### Configuration Template to Apply/Generate:
-(Be sure to replace `<DETECTED_WORKSPACE_PATH>` with the actual absolute path of this workspace, and `<USER_GITHUB_TOKEN>` with the token I provide).
-
 {
   "mcpServers": {
     "github-mcp-server": {
@@ -182,11 +199,15 @@ Please help me bootstrap my local Hercules-MCP system. Follow these steps to con
       "args": [
         "run",
         "<DETECTED_WORKSPACE_PATH>/infrastructure/openhands_mcp.py"
-      ]
+      ],
+      "env": {
+        "WORKSPACE_ROOT": "<DETECTED_WORKSPACE_PATH>",
+        "PROJECTS_DIR": "<DETECTED_PROJECTS_DIR_PATH>"
+      }
     }
   }
 }
-
+```
 Verify the configuration once complete and confirm when we are ready to build!
 ```
 

@@ -357,12 +357,18 @@ def watch_projects_folder():
     Background worker that polls the Projects directory for new folders
     and automatically registers them.
     """
-    # Use standard host path location matching map_workspace_path
-    projects_dir = resolve_projects_dir()
-    if not projects_dir.exists():
-        logger.warning(f"Projects directory {projects_dir} does not exist. Auto-registration watcher stopped.")
-        return
-
+    logger.info("Projects directory watcher thread started.")
+    
+    # Wait for the projects directory to exist
+    while True:
+        projects_dir = resolve_projects_dir()
+        if projects_dir.exists():
+            break
+        logger.info(f"Projects directory {projects_dir} does not exist yet. Waiting...")
+        time.sleep(10)
+        
+    logger.info(f"Projects directory detected at {projects_dir}. Performing initial scan...")
+    
     # Track already scanned project names
     known_dirs = set()
     try:
@@ -383,6 +389,16 @@ def watch_projects_folder():
     while True:
         try:
             time.sleep(5)
+            # Re-resolve in case path environment variables changed
+            projects_dir = resolve_projects_dir()
+            if not projects_dir.exists():
+                logger.warning(f"Projects directory {projects_dir} disappeared! Waiting for recreation...")
+                while not projects_dir.exists():
+                    time.sleep(10)
+                    projects_dir = resolve_projects_dir()
+                logger.info(f"Projects directory re-detected at {projects_dir}.")
+                known_dirs.clear()  # Reset to trigger re-scan
+                
             current_dirs = set()
             for entry in projects_dir.iterdir():
                 if entry.is_dir() and not entry.name.startswith("."):
