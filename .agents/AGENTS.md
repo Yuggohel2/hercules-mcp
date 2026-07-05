@@ -3,11 +3,7 @@
 To optimize native performance and stay strictly within the 8% remaining Gemini model quota, all agents working in this workspace must adhere to the following rules:
 
 ## 1. Onboarding and Workspace Configuration Discovery
-- **Rule**: If this is a new workspace session or if the project folder, workspace root, or IDE client details are not yet identified, the agent must ask the user to verify/input:
-  1. The **workspace root path** (e.g., `D:/AI workspace`).
-  2. The **designated project folder name** (e.g., `Projects/` or any custom folder where their software application files live).
-  3. The **IDE / Agent client** in use (Antigravity IDE, Cursor, Claude Code, or VS Code with Cline/Roo Code).
-- **Rule**: If either folder does not exist, the agent must ask the user what to name them and create them. If they already exist, the agent must dynamically detect and connect them.
+- **Rule**: Onboarding and path discovery are only performed for new workspaces or when configuration values cannot be automatically resolved. If the workspace root, designated project folder, and client settings have already been identified or verified in a prior session, the agent MUST NOT ask the user to re-verify or re-input these details. Instead, the agent should dynamically detect the configuration and connect silently.
 - **Rule**: The agent must automatically write the detected/configured paths (`WORKSPACE_ROOT` and `PROJECTS_DIR`) into the `env` section of the `openhands` server configuration in `mcp_config.json` (or the equivalent client settings file) to ensure the collaborative tools are correctly scoped.
 - **Rule**: **Path Formatting in Configs:** When writing paths to `mcp_config.json` or client settings, the agent MUST always standardize paths to use forward slashes `/` (e.g., `C:/Users/John/Workspace`) instead of backslashes. This prevents JSON escape corruption bugs on Windows.
 
